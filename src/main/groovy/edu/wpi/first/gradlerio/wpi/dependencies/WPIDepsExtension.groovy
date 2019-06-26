@@ -16,7 +16,7 @@ public class WPIDepsExtension {
     }
 
     List<String> wpilib() {
-        wpilibJni().each {
+        wpilibVMXJni().each {
             wpi.project.dependencies.add("nativeZip", it)
         }
         wpilibDesktopJni().each {
@@ -69,6 +69,14 @@ public class WPIDepsExtension {
     List<String> wpilibRaspbianJni() {
         return ["edu.wpi.first.thirdparty.frc2019.opencv:opencv-cpp:${wpi.opencvVersion}:${wpi.platforms.raspbian}@zip".toString(),
                 "edu.wpi.first.hal:hal-cpp:${wpi.wpilibVersion}:${wpi.platforms.raspbian}@zip".toString(),
+                "edu.wpi.first.wpiutil:wpiutil-cpp:${wpi.wpilibVersion}:${wpi.platforms.raspbian}@zip".toString(),
+                "edu.wpi.first.ntcore:ntcore-cpp:${wpi.wpilibVersion}:${wpi.platforms.raspbian}@zip".toString(),
+                "edu.wpi.first.cscore:cscore-cpp:${wpi.wpilibVersion}:${wpi.platforms.raspbian}@zip".toString()]
+    }
+	
+	List<String> wpilibVMXJni() {
+        return ["edu.wpi.first.thirdparty.frc2019.opencv:opencv-cpp:${wpi.opencvVersion}:${wpi.platforms.raspbian}@zip".toString(),
+                "com.kauailabs.vmx.first.hal:hal-cpp:2019.4.1-vmxpi-beta-2:linuxraspbian@zip".toString(),
                 "edu.wpi.first.wpiutil:wpiutil-cpp:${wpi.wpilibVersion}:${wpi.platforms.raspbian}@zip".toString(),
                 "edu.wpi.first.ntcore:ntcore-cpp:${wpi.wpilibVersion}:${wpi.platforms.raspbian}@zip".toString(),
                 "edu.wpi.first.cscore:cscore-cpp:${wpi.wpilibVersion}:${wpi.platforms.raspbian}@zip".toString()]

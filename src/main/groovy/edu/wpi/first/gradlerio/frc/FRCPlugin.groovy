@@ -76,6 +76,10 @@ class FRCPlugin implements Plugin<Project> {
         targetExtensionAware.extensions.add('roboRIO', { String name, Closure closure ->
             targetExtension.target(name, RoboRIO, closure)
         })
+		
+		targetExtensionAware.extensions.add('vmxpi', { String name, Closure closure ->
+            targetExtension.target(name, VMXpi, closure)
+        })
 
         targetExtensionAware.extensions.add('frcCompatibleTarget', { String name, Closure closure ->
             targetExtension.target(name, FRCCompatibleTarget, closure)
@@ -91,7 +95,7 @@ class FRCPlugin implements Plugin<Project> {
     }
 
     public static void allFrcTargets(DeployExtension ext, Artifact artifact) {
-        ext.targets.withType(FRCCompatibleTarget).all { RoboRIO r ->
+        ext.targets.withType(FRCCompatibleTarget).all { VMXpi r ->
             artifact.targets << r.name
         }
     }
@@ -134,7 +138,7 @@ class FRCPlugin implements Plugin<Project> {
             artifact.configuration = nativeZips
             artifact.zipped = true
             artifact.filter = { PatternFilterable pat ->
-                pat.include('*.so*', 'lib/*.so', 'java/lib/*.so', 'linux/athena/shared/*.so', 'linuxathena/**/*.so', '**/libopencv*.so.*')
+                pat.include('*.so*', 'lib/*.so', 'java/lib/*.so', 'linux/athena/shared/*.so', 'linuxathena/**/*.so', '**/libopencv*.so.*', 'linux/raspbian/shared/*.so', 'linuxraspbian/**/*.so')
             }
         }
     }
