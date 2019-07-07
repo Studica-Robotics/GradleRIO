@@ -36,7 +36,7 @@ class WPINativeCompileRules extends RuleSource {
                                                            '-pthread']
     public static final String[] linuxCrossCCompilerArgs = ['-Wformat=2', '-Wno-psabi', '-g',
                                                             '-Wno-unused-parameter', '-fPIC', '-rdynamic', '-pthread']
-    public static final String[] linuxCrossLinkerArgs = ['-rdynamic', '-pthread', '-ldl']
+    public static final String[] linuxCrossLinkerArgs = ['-rdynamic', '-pthread', '-ldl', '-Wl,-unresolved-symbols=ignore-in-shared-libs' ]
     public static final String[] linuxCrossReleaseCompilerArgs = ['-O2']
     public static final String[] linuxCrossDebugCompilerArgs = ['-Og']
 

@@ -11,7 +11,7 @@ class FRCNativeLibraryArtifact extends NativeArtifact {
 
   FRCNativeLibraryArtifact(String name, Project project) {
     super(name, project)
-    targetPlatform = NativePlatforms.roborio
+    targetPlatform = NativePlatforms.raspbian
 
     directory = FRCPlugin.LIB_DEPLOY_DIR
 

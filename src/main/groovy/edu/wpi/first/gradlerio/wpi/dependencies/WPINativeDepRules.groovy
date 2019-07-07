@@ -70,6 +70,7 @@ class WPINativeDepRules extends RuleSource {
             String libSuffix    = buildKind.contains('debug') ? 'd' : ''
             String config       = "native_${name}${buildKind}".toString()
             String linkSuff     = shared ? '' : 'static'
+			
 
             libs.create("${name}_headers${buildKind}".toString(), NativeLib, { NativeLib lib ->
                 common(lib)
@@ -159,7 +160,8 @@ class WPINativeDepRules extends RuleSource {
             def suf = shared ? '' : '_static'
 
             createWpiLibrary(libs, 'wpilibc' + suf, "edu.wpi.first.wpilibc:wpilibc-cpp:${wpi.wpilibVersion}", 'wpilibc', true, true, shared)
-            createWpiLibrary(libs, 'hal' + suf, "edu.wpi.first.hal:hal-cpp:${wpi.wpilibVersion}", 'wpiHal', true, true, shared)
+            createWpiLibrary(libs, 'hal' + suf, "com.kauailabs.vmx.first.hal:hal-cpp:2019.4.1-vmxpi-beta-6", 'wpiHal', true, true, shared)
+            //createWpiLibrary(libs, 'hal' + suf, "edu.wpi.first.hal:hal-cpp:${wpi.wpilibVersion}", 'wpiHal', true, true, shared)
             createWpiLibrary(libs, 'wpiutil' + suf, "edu.wpi.first.wpiutil:wpiutil-cpp:${wpi.wpilibVersion}", 'wpiutil', true, true, shared)
             createWpiLibrary(libs, 'ntcore' + suf, "edu.wpi.first.ntcore:ntcore-cpp:${wpi.wpilibVersion}", 'ntcore', true, true, shared)
             createWpiLibrary(libs, 'cscore' + suf, "edu.wpi.first.cscore:cscore-cpp:${wpi.wpilibVersion}", 'cscore', true, true, shared)

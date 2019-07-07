@@ -3,7 +3,7 @@ package edu.wpi.first.gradlerio.frc
 import com.google.gson.GsonBuilder
 import edu.wpi.first.toolchain.NativePlatforms
 import edu.wpi.first.toolchain.ToolchainExtension
-import edu.wpi.first.toolchain.roborio.RoboRioToolchainPlugin
+import edu.wpi.first.toolchain.raspbian.RaspbianToolchainPlugin
 import groovy.transform.CompileStatic
 import jaci.gradle.PathUtils
 import jaci.gradle.deploy.artifact.BinaryLibraryArtifact
@@ -24,7 +24,7 @@ import java.nio.file.Paths
 class FRCNativeArtifact extends NativeArtifact {
     FRCNativeArtifact(String name, Project project) {
         super(name, project)
-        targetPlatform = NativePlatforms.roborio
+        targetPlatform = NativePlatforms.raspbian
 
         predeploy << { DeployContext ctx ->
             def binFile = PathUtils.combine(ctx.workingDir, filename ?: file.get().name)
@@ -132,9 +132,9 @@ class FRCNativeArtifact extends NativeArtifact {
                 def ip = (IPSessionController)ctx.controller
                 def filepath = file.get().absolutePath.replaceAll("\\\\", "/")
                 def target = ip.host + ":" + debugPort
-//                def toolchainD = project.plugins.getPlugin(WPIToolchainPlugin.class).discoverRoborioToolchain()
+//                def toolchainD = project.plugins.getPlugin(WPIToolchainPlugin.class).discoverRaspbianToolchain()
 
-                def toolchainD = project.extensions.getByType(ToolchainExtension).getByName(RoboRioToolchainPlugin.toolchainName).discover()
+                def toolchainD = project.extensions.getByType(ToolchainExtension).getByName(RaspbianToolchainPlugin.toolchainName).discover()
                 def gdbpath = toolchainD.gdbFile().get().absolutePath
                 def sysroot = toolchainD.sysroot().orElse(null).absolutePath
 
