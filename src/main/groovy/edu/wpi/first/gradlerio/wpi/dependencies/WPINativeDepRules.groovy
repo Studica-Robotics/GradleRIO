@@ -160,7 +160,7 @@ class WPINativeDepRules extends RuleSource {
             def suf = shared ? '' : '_static'
 
             createWpiLibrary(libs, 'wpilibc' + suf, "edu.wpi.first.wpilibc:wpilibc-cpp:${wpi.wpilibVersion}", 'wpilibc', true, true, shared)
-            createWpiLibrary(libs, 'hal' + suf, "com.kauailabs.vmx.first.hal:hal-cpp:2019.4.1-vmxpi-beta-6", 'wpiHal', true, true, shared)
+            createWpiLibrary(libs, 'hal' + suf, "com.kauailabs.vmx.first.hal:hal-cpp:${wpi.vmxVersion}", 'wpiHal', true, true, shared)
             //createWpiLibrary(libs, 'hal' + suf, "edu.wpi.first.hal:hal-cpp:${wpi.wpilibVersion}", 'wpiHal', true, true, shared)
             createWpiLibrary(libs, 'wpiutil' + suf, "edu.wpi.first.wpiutil:wpiutil-cpp:${wpi.wpilibVersion}", 'wpiutil', true, true, shared)
             createWpiLibrary(libs, 'ntcore' + suf, "edu.wpi.first.ntcore:ntcore-cpp:${wpi.wpilibVersion}", 'ntcore', true, true, shared)

@@ -76,7 +76,7 @@ public class WPIDepsExtension {
 	
 	List<String> wpilibVMXJni() {
         return ["edu.wpi.first.thirdparty.frc2019.opencv:opencv-cpp:${wpi.opencvVersion}:${wpi.platforms.raspbian}@zip".toString(),
-                "com.kauailabs.vmx.first.hal:hal-cpp:2019.4.1-vmxpi-beta-6:linuxraspbian@zip".toString(),
+                "com.kauailabs.vmx.first.hal:hal-cpp:${wpi.vmxVersion}:linuxraspbian@zip".toString(),
                 "edu.wpi.first.wpiutil:wpiutil-cpp:${wpi.wpilibVersion}:${wpi.platforms.raspbian}@zip".toString(),
                 "edu.wpi.first.ntcore:ntcore-cpp:${wpi.wpilibVersion}:${wpi.platforms.raspbian}@zip".toString(),
                 "edu.wpi.first.cscore:cscore-cpp:${wpi.wpilibVersion}:${wpi.platforms.raspbian}@zip".toString()]
