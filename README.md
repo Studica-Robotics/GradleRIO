@@ -1,3 +1,10 @@
+# VMX-Pi set-up
+Clone this repo, then navigate to the root of this project in a powershell 
+
+Run `./gradlew publishToMavenLocal -PlocalPublish` 
+
+View the project build.gradle examples in https://github.com/KadenK/GradleRIO/tree/master/vscode-examples to see how to adapt your project
+
 # GradleRIO
 GradleRIO is a powerful Gradle Plugin that allows teams competing in the FIRST
 robotics competition to produce and build their code.
