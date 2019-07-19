@@ -5,6 +5,8 @@ Run `./gradlew publishToMavenLocal -PlocalPublish`
 
 View the project build.gradle examples in https://github.com/KadenK/GradleRIO/tree/master/vscode-examples to see how to adapt your project
 
+To update the VMX WPI HAL, change the version number in WPIExtension.groovy to reflect the desired version. Then run the above steps, ommiting the clone step.
+
 Note: C++ raspbian toolchains will need to be installed to VSCode. In VSCode, "Run a command in Gradle", and run `installRaspbianToolchain`
 
 # GradleRIO
