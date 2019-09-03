@@ -13,7 +13,7 @@ import javax.inject.Inject
 class WPIExtension {
     // WPILib (first.wpi.edu/FRC/roborio/maven) libs
     String wpilibVersion = "2019.4.1"
-	String vmxVersion = "2019.4.1-vmxpi-beta-12"
+	String vmxVersion = "2019.4.1-vmxpi-beta-14"
     String niLibrariesVersion = "2019.12.1"
     String opencvVersion = "3.4.4-4"
     static final String[] validImageVersions = ['2019_v14']
