@@ -32,7 +32,7 @@ class WPINativeJsonDepRules extends RuleSource {
                 String linkSuff     = cpp.sharedLibrary ? '' : 'static'
                 String name = dep.uuid + cpp.libName
                 String mavenbase = "${cpp.groupId}:${cpp.artifactId}:${WPIVendorDepsExtension.getVersion(cpp.version, wpi)}"
-                String config = cpp.configuration ?: "native_${dep.uuid}"
+                String config = cpp.configuration ?: "native_${dep.uuid}_${cpp.groupId}${cpp.artifactId}"
                 List<String> allPlatforms = platformContainer.collect { Platform p -> p.name }
 
                 // Note: because of a discrepancy between the target platforms of the headers, sources
@@ -49,7 +49,7 @@ class WPINativeJsonDepRules extends RuleSource {
                         lib.headerDirs << ''
                         lib.libraryName = "${name}_headers"
                         lib.maven = "$mavenbase:${cpp.headerClassifier}@zip"
-                        lib.configuration = config
+                        lib.configuration = "${config}_headers".toString()
                     } as Action<NativeLib>)
                 }
 
@@ -61,7 +61,7 @@ class WPINativeJsonDepRules extends RuleSource {
                         lib.sourceDirs << ''
                         lib.libraryName = "${name}_sources"
                         lib.maven = "$mavenbase:${cpp.sourcesClassifier}@zip"
-                        lib.configuration = config
+                        lib.configuration = "${config}_sources".toString()
                     } as Action<NativeLib>)
                 }
 
@@ -86,7 +86,7 @@ class WPINativeJsonDepRules extends RuleSource {
                                 } else {
                                     lib.staticMatchers.add("**/*${cpp.libName}*.a".toString())
                                 }
-                                lib.maven = "$mavenbase:${platform}${linkSuff}debug@zip"
+                                lib.maven = "$mavenbase:${platform}${linkSuff}$buildKind@zip"
                                 // It can't be 'config' otherwise missing libs break even if not used!
                                 lib.configuration = "${binaryConfig}_${platform}".toString()
                             } as Action<NativeLib>)

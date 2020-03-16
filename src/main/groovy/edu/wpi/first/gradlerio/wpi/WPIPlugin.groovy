@@ -1,13 +1,14 @@
 package edu.wpi.first.gradlerio.wpi
 
 import edu.wpi.first.gradlerio.wpi.dependencies.WPIDependenciesPlugin
-import edu.wpi.first.gradlerio.wpi.dependencies.WPINativeDepRules
 import edu.wpi.first.gradlerio.wpi.dependencies.WPINativeJsonDepRules
 import edu.wpi.first.gradlerio.wpi.dependencies.tools.WPIToolsPlugin
+import edu.wpi.first.toolchain.ToolchainExtension
 import edu.wpi.first.toolchain.ToolchainPlugin
 import edu.wpi.first.toolchain.roborio.RoboRioToolchainPlugin
 import edu.wpi.first.vscode.GradleVsCode
 import groovy.transform.CompileStatic
+import jaci.gradle.ActionWrapper
 import jaci.gradle.log.ETLogger
 import jaci.gradle.log.ETLoggerFactory
 import jaci.gradle.toolchains.ToolchainsPlugin
@@ -16,6 +17,9 @@ import org.gradle.api.Project
 import org.gradle.api.Task
 import org.gradle.api.artifacts.repositories.MavenArtifactRepository
 import org.gradle.internal.logging.text.StyledTextOutput
+import edu.wpi.first.nativeutils.NativeUtils
+import edu.wpi.first.nativeutils.NativeUtilsExtension
+import edu.wpi.first.toolchain.configurable.CrossCompilerConfiguration
 
 @CompileStatic
 class WPIPlugin implements Plugin<Project> {
@@ -30,10 +34,35 @@ class WPIPlugin implements Plugin<Project> {
 
         project.plugins.withType(ToolchainsPlugin).all {
             logger.info("DeployTools Native Project Detected".toString())
-            project.pluginManager.apply(WPINativeDepRules)
             project.pluginManager.apply(ToolchainPlugin)
             project.pluginManager.apply(RoboRioToolchainPlugin)
+            project.pluginManager.apply(NativeUtils)
             project.pluginManager.apply(WPINativeCompileRules)
+
+            NativeUtilsExtension nte = project.extensions.getByType(NativeUtilsExtension)
+            nte.withRoboRIO()
+            nte.addWpiNativeUtils()
+
+            ToolchainExtension te = project.extensions.getByType(ToolchainExtension)
+            te.crossCompilers.named(nte.wpi.platforms.roborio, new ActionWrapper({ CrossCompilerConfiguration c ->
+                c.optional.set(false)
+            }))
+
+            nte.wpi.addWarnings()
+            nte.setSinglePrintPerPlatform()
+
+            project.afterEvaluate {
+                def ntExt = project.extensions.getByType(NativeUtilsExtension)
+                def wpiExt = project.extensions.getByType(WPIExtension)
+                ntExt.wpi.configureDependencies {
+                    it.wpiVersion = wpiExt.wpilibVersion
+                    it.niLibVersion = wpiExt.niLibrariesVersion
+                    it.opencvVersion = wpiExt.opencvVersion
+                    it.googleTestVersion = wpiExt.googleTestVersion
+                    it.imguiVersion = wpiExt.imguiVersion
+                }
+            }
+
             project.pluginManager.apply(GradleVsCode)
             project.pluginManager.apply(WPINativeJsonDepRules)
         }
@@ -109,6 +138,11 @@ class WPIPlugin implements Plugin<Project> {
                     repo.name = "WPI${mirror.name}Release"
                     repo.url = mirror.release
                 }
+        }
+
+        // Maven Central is needed for EJML and JUnit
+        if (wpi.maven.useMavenCentral) {
+            project.repositories.mavenCentral()
         }
     }
 }

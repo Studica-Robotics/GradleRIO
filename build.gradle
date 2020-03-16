@@ -14,20 +14,23 @@ repositories {
 }
 
 dependencies {
-    compile 'com.google.code.gson:gson:2.2.4'
-    compile 'edu.wpi.first:gradle-cpp-vscode:0.7.1'
+    api 'com.google.code.gson:gson:2.8.6'
+    api 'edu.wpi.first:gradle-cpp-vscode:0.12.0'
 
-    compile 'edu.wpi.first:ToolchainPlugin:2019.4.1'
+    api 'edu.wpi.first:native-utils:2020.7.2'
 
-    compile 'com.jcraft:jsch:0.1.53'
-
-    testCompile('org.spockframework:spock-core:1.2-groovy-2.5') {
+    testImplementation('org.spockframework:spock-core:1.2-groovy-2.5') {
         exclude group: 'org.codehaus.groovy'
     }
-    testCompile gradleTestKit()
+    testImplementation gradleTestKit()
 }
 
 archivesBaseName = "GradleRIO"
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_1_8
+    targetCompatibility = JavaVersion.VERSION_1_8
+}
 
 compileGroovy {
     sourceCompatibility = '8'
@@ -36,7 +39,7 @@ compileGroovy {
 
 allprojects {
     group = "edu.wpi.first"
-    version = "2019.4.1-VMX"
+    version = "2020.3.2-VMX"
 
     if (project.hasProperty('publishVersion')) {
         version = project.publishVersion
@@ -87,12 +90,13 @@ examplesFolder.eachFile { File file ->
     if (file.isDirectory() && file.name != '_archived') {
         task "zipExample${file.name}"(type: Zip) {
             from(file) {
-                archiveName "${file.name}.zip"
+                archiveFileName = "${file.name}.zip"
                 exclude 'build/'
                 exclude '.gradle/'
             }
 
             zipExamples.dependsOn it
+            it.dependsOn PatchExamples
         }
     }
 }
@@ -100,6 +104,6 @@ examplesFolder.eachFile { File file ->
 jar.finalizedBy zipExamples
 
 wrapper {
-    gradleVersion = '5.0'
-    distributionType = Wrapper.DistributionType.ALL
+    gradleVersion = '6.0'
+    distributionType = Wrapper.DistributionType.BIN
 }

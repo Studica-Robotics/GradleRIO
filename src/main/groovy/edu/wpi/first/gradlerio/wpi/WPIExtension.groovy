@@ -3,61 +3,58 @@ package edu.wpi.first.gradlerio.wpi
 import edu.wpi.first.gradlerio.wpi.dependencies.WPIDepsExtension
 import edu.wpi.first.toolchain.NativePlatforms
 import groovy.transform.CompileStatic
+import org.gradle.api.Action
 import org.gradle.api.Project
 import org.gradle.api.plugins.ExtensionAware
 import org.gradle.internal.os.OperatingSystem
+import edu.wpi.first.nativeutils.NativeUtilsExtension
+import org.gradle.nativeplatform.NativeBinarySpec
+import org.gradle.platform.base.VariantComponentSpec
 
 import javax.inject.Inject
 
 @CompileStatic
 class WPIExtension {
     // WPILib (first.wpi.edu/FRC/roborio/maven) libs
-    String wpilibVersion = "2019.4.1"
-	String vmxVersion = "2019.4.1-vmxpi-beta-16"
-    String niLibrariesVersion = "2019.12.1"
-    String opencvVersion = "3.4.4-4"
-    static final String[] validImageVersions = ['2019_v14']
+    String wpilibVersion = "2020.3.2"
+	String vmxVersion = "2020.3.2-vmxpi-alpha-1"	
+    String niLibrariesVersion = "2020.10.1"
+    String opencvVersion = "3.4.7-2"
+    String imguiVersion = "1.72b-1"
+    String ejmlVersion = "0.38"
+    String jacksonVersion = "2.10.0"
+    static final String[] validImageVersions = ['2020_v10']
 
-    String wpilibYear = '2019'
+    String wpilibYear = '2020'
 
-    String googleTestVersion = "1.8.0-4-4e4df22"
+    String googleTestVersion = "1.9.0-4-437e100-1"
 
-    String jreArtifactLocation = "edu.wpi.first.jdk:roborio-2019:11.0.1u13-1"
+    String jreArtifactLocation = "edu.wpi.first.jdk:roborio-2020:11.0.4u10-2"
 
     // WPILib (first.wpi.edu/FRC/roborio/maven) Utilities
-    String smartDashboardVersion = "2019.4.1"
-    String shuffleboardVersion = "2019.4.1"
-    String outlineViewerVersion = "2019.4.1"
-    String robotBuilderVersion = "2019.4.1"
-    String pathWeaverVersion = "2019.2.1"
-
-    // WPILib Toolchain (https://github.com/wpilibsuite/toolchain-builder/releases/latest) version and tag
-    String toolchainTag = 'v2019-3'
-    String toolchainVersion = "2019-6.3.0"
-    String toolchainVersionLow = "6.3"
-    String toolchainVersionHigh = "6.3"
-
-    // Set to true to use debug JNI
-    // Might require extra libraries (especially on windows)
-    boolean debugSimJNI = false
+    String smartDashboardVersion = "2020.3.2"
+    String shuffleboardVersion = "2020.3.2"
+    String outlineViewerVersion = "2020.3.2"
+    String robotBuilderVersion = "2020.3.2"
+    String pathWeaverVersion = "2020.3.2"
 
     WPIMavenExtension maven
     WPIDepsExtension deps
 
-    String frcYear = '2019'
+    String frcYear = '2020'
 
     NativePlatforms platforms;
 
     final Project project
     final String toolsClassifier
 
+    NativeUtilsExtension ntExt;
+
     @Inject
     WPIExtension(Project project) {
         this.project = project
-        // Object factory breaks `wpi.maven {}`, hence instead we use extensions.create.
-//        def factory = project.objects
-//        maven = factory.newInstance(WPIMavenExtension, project)
-        maven = ((ExtensionAware)this).extensions.create('maven', WPIMavenExtension, project)
+        def factory = project.objects
+        maven = factory.newInstance(WPIMavenExtension, project)
 
         if (project.hasProperty('forceToolsClassifier')) {
             this.toolsClassifier = project.findProperty('forceToolsClassifier')
@@ -72,7 +69,47 @@ class WPIExtension {
         }
 
         platforms = new NativePlatforms();
-        deps = new WPIDepsExtension(this)
+        deps = factory.newInstance(WPIDepsExtension, project, this)
+    }
+
+    void maven(final Action<? super WPIMavenExtension> closure) {
+      closure.execute(maven);
+    }
+
+    public void useLibrary(VariantComponentSpec component, String... libraries) {
+        useRequiredLibrary(component, libraries)
+    }
+
+    public void useLibrary(NativeBinarySpec binary, String... libraries) {
+        useRequiredLibrary(binary, libraries)
+    }
+
+    public void useRequiredLibrary(VariantComponentSpec component, String... libraries) {
+        if (ntExt == null) {
+            ntExt = project.extensions.getByType(NativeUtilsExtension)
+        }
+        ntExt.useRequiredLibrary(component, libraries)
+    }
+
+    public void useRequiredLibrary(NativeBinarySpec binary, String... libraries) {
+        if (ntExt == null) {
+            ntExt = project.extensions.getByType(NativeUtilsExtension)
+        }
+        ntExt.useRequiredLibrary(binary, libraries)
+    }
+
+    public void useOptionalLibrary(VariantComponentSpec component, String... libraries) {
+        if (ntExt == null) {
+            ntExt = project.extensions.getByType(NativeUtilsExtension)
+        }
+        ntExt.useOptionalLibrary(component, libraries)
+    }
+
+    public void useOptionalLibrary(NativeBinarySpec binary, String... libraries) {
+        if (ntExt == null) {
+            ntExt = project.extensions.getByType(NativeUtilsExtension)
+        }
+        ntExt.useOptionalLibrary(binary, libraries)
     }
 
     private String frcHomeCache
@@ -87,10 +124,12 @@ class WPIExtension {
             if (publicFolder == null) {
                 publicFolder = "C:\\Users\\Public"
             }
-            frcHome = new File(publicFolder, "frc${this.frcYear}").toString()
+            def homeRoot = new File(publicFolder, "wpilib")
+            frcHome = new File(homeRoot, this.frcYear).toString()
         } else {
             def userFolder = System.getProperty("user.home")
-            frcHome = new File(userFolder, "frc${this.frcYear}").toString()
+            def homeRoot = new File(userFolder, "wpilib")
+            frcHome = new File(homeRoot, this.frcYear).toString()
         }
         frcHomeCache = frcHome
         return frcHomeCache
@@ -104,13 +143,14 @@ class WPIExtension {
                 "opencvVersion"        : new Tuple("OpenCV", opencvVersion, "opencv"),
                 "wpilibYear"           : new Tuple("WPILib Year", wpilibYear, "wpilibYear"),
                 "googleTestVersion"    : new Tuple("Google Test", googleTestVersion, "googleTest"),
+                "imguiVersion"         : new Tuple("ImGUI", imguiVersion, "imgui"),
+                "ejmlVersion"          : new Tuple("EJML", ejmlVersion, "ejml"),
+                "jacksonVersion"       : new Tuple("Jackson", jacksonVersion, "jackson"),
 
                 "smartDashboardVersion": new Tuple("SmartDashboard", smartDashboardVersion, "smartdashboard"),
                 "shuffleboardVersion"  : new Tuple("Shuffleboard", shuffleboardVersion, "shuffleboard"),
                 "outlineViewerVersion" : new Tuple("OutlineViewer", outlineViewerVersion, "outlineviewer"),
                 "robotBuilderVersion"  : new Tuple("RobotBuilder", robotBuilderVersion, "robotbuilder"),
-
-                "toolchainVersion"     : new Tuple("Toolchain", toolchainVersion, "toolchain"),
         ]
     }
 }

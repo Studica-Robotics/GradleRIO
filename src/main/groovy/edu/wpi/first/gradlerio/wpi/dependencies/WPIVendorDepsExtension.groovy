@@ -16,10 +16,11 @@ import org.gradle.api.plugins.ExtensionAware
 import org.gradle.nativeplatform.NativeBinarySpec
 import org.gradle.platform.base.VariantComponentSpec
 
+import javax.inject.Inject
+
 @CompileStatic
 public class WPIVendorDepsExtension {
 
-    final WPIDepsExtension wpiDeps
     final WPIExtension wpiExt
 
     List<JsonDependency> dependencies = []
@@ -32,10 +33,10 @@ public class WPIVendorDepsExtension {
 
     public static final String VENDORDEPS_FOLDER_NAME = 'vendordeps'
 
-    WPIVendorDepsExtension(WPIDepsExtension wpiDeps, WPIExtension wpiExt) {
-        this.wpiDeps = wpiDeps
+    @Inject
+    WPIVendorDepsExtension(WPIExtension wpiExt) {
         this.wpiExt = wpiExt
-        this.vendorFolder = wpiDeps.wpi.project.file(VENDORDEPS_FOLDER_NAME)
+        this.vendorFolder = wpiExt.project.file(VENDORDEPS_FOLDER_NAME)
         this.log = ETLoggerFactory.INSTANCE.create('WPIVendorDeps')
         this.slurper = new JsonSlurper()
     }
@@ -121,6 +122,14 @@ public class WPIVendorDepsExtension {
     }
 
     List<String> jni(String platform, String... ignore) {
+        return jniInternal(false, platform, ignore)
+    }
+
+    List<String> jniDebug(String platform, String... ignore) {
+        return jniInternal(true, platform, ignore)
+    }
+
+    List<String> jniInternal(boolean debug, String platform, String... ignore) {
         if (dependencies == null) return []
 
         def deps = [] as List<String>
@@ -133,10 +142,8 @@ public class WPIVendorDepsExtension {
                         throw new WPIDependenciesPlugin.MissingJniDependencyException(dep.name, platform, jni)
 
                     if (applies) {
-                        def debug = wpiExt.debugSimJNI ? "debug" : ""
-                        debug = platform.equals(NativePlatforms.roborio) ? "debug" : debug
-                        debug = platform.equals(NativePlatforms.raspbian) ? "" : debug
-                        deps.add("${jni.groupId}:${jni.artifactId}:${getVersion(jni.version, wpiExt)}:${platform}${debug}@${jni.isJar ? 'jar' : 'zip'}".toString())
+                        def debugString = debug ? "debug" : ""
+                        deps.add("${jni.groupId}:${jni.artifactId}:${getVersion(jni.version, wpiExt)}:${platform}${debugString}@${jni.isJar ? 'jar' : 'zip'}".toString())
                     }
                 }
             }
@@ -146,7 +153,7 @@ public class WPIVendorDepsExtension {
     }
 
     void cpp(Object scope, String... ignore) {
-        def dse = wpiDeps.wpi.project.extensions.getByType(DependencySpecExtension)
+        def dse = wpiExt.project.extensions.getByType(DependencySpecExtension)
         if (scope in VariantComponentSpec) {
             ((VariantComponentSpec)scope).binaries.withType(NativeBinarySpec).all { NativeBinarySpec bin ->
                 cppVendorLibForBin(dse, bin, ignore)

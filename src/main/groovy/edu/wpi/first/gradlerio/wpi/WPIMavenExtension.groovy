@@ -16,6 +16,7 @@ class WPIMavenExtension extends DefaultNamedDomainObjectSet<WPIMavenRepo> {
     boolean useLocal
     boolean useFrcMavenLocalDevelopment
     boolean useFrcMavenLocalRelease
+    boolean useMavenCentral
 
     @Inject
     WPIMavenExtension(Project project) {
@@ -26,10 +27,11 @@ class WPIMavenExtension extends DefaultNamedDomainObjectSet<WPIMavenRepo> {
         this.useLocal = true
         this.useFrcMavenLocalDevelopment = false
         this.useFrcMavenLocalRelease = false
+        this.useMavenCentral = true
 
         mirror("Official") { WPIMavenRepo mirror ->
-            mirror.release = "https://first.wpi.edu/FRC/roborio/maven/release"
-            mirror.development = "https://first.wpi.edu/FRC/roborio/maven/development"
+            mirror.release = "https://frcmaven.wpi.edu/artifactory/release"
+            mirror.development = "https://frcmaven.wpi.edu/artifactory/development"
             mirror.priority = WPIMavenRepo.PRIORITY_OFFICIAL
         }
 		
@@ -37,10 +39,10 @@ class WPIMavenExtension extends DefaultNamedDomainObjectSet<WPIMavenRepo> {
 			mirror.release = "https://repo1.maven.org/maven2/"
 		}
 
-        mirror("AU") { WPIMavenRepo mirror ->
-            mirror.release = "http://wpimirror.imjac.in/m2/release"
-            mirror.development = "http://wpimirror.imjac.in/m2/development"
-        }
+        // mirror("AU") { WPIMavenRepo mirror ->
+        //     mirror.release = "http://wpimirror.imjac.in/m2/release"
+        //     mirror.development = "http://wpimirror.imjac.in/m2/development"
+        // }
     }
 
     // Mirror = source for WPILib artifacts

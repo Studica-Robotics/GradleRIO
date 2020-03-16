@@ -19,6 +19,8 @@ import org.gradle.platform.base.BinaryContainer
 import org.gradle.platform.base.BinarySpec
 import org.gradle.platform.base.ComponentSpec
 import org.gradle.platform.base.ComponentSpecContainer
+import org.gradle.api.plugins.ExtensionContainer
+import edu.wpi.first.nativeutils.NativeUtilsExtension
 
 @CompileStatic
 class WPINativeCompileRules extends RuleSource {
@@ -66,120 +68,12 @@ class WPINativeCompileRules extends RuleSource {
     }
 
     @Mutate
-    void addBinaryFlags(BinaryContainer binaries) {
+    void addBinaryFlags(BinaryContainer binaries, ExtensionContainer extensions) {
+        def ntExt = extensions.getByType(NativeUtilsExtension)
+
         binaries.withType(NativeBinarySpec, { NativeBinarySpec bin ->
-            if (bin.targetPlatform.name.equals(NativePlatforms.desktop)) {
-                // Desktop
-                if (bin.targetPlatform.operatingSystem.isWindows()) {
-                    // Windows
-                    windowsCompilerArgs.each { String arg ->
-                        bin.cppCompiler.args << arg
-                    }
-                    windowsCCompilerArgs.each { String arg ->
-                        bin.cCompiler.args << arg
-                    }
-                    windowsLinkerArgs.each { String arg ->
-                        bin.linker.args << arg
-                    }
-                    if (bin.buildType.name.contains('debug')) {
-                        windowsDebugCompilerArgs.each { String arg ->
-                            bin.cppCompiler.args << arg
-                            bin.cCompiler.args << arg
-                        }
-                    } else {
-                        windowsReleaseCompilerArgs.each { String arg ->
-                            bin.cppCompiler.args << arg
-                            bin.cCompiler.args << arg
-                        }
-                        windowsReleaseLinkerArgs.each { String arg ->
-                            bin.linker.args << arg
-                        }
-                    }
-                } else if (bin.targetPlatform.operatingSystem.isMacOsX()) {
-                    // OSX
-                    macCompilerArgs.each { String arg ->
-                        bin.cppCompiler.args << arg
-                    }
-                    macCCompilerArgs.each { String arg ->
-                        bin.cCompiler.args << arg
-                    }
-                    macObjCppLinkerArgs.each { String arg ->
-                        bin.objcppCompiler.args << arg
-                    }
-                    macLinkerArgs.each { String arg ->
-                        bin.linker.args << arg
-                    }
-                    if (bin.buildType.name.contains('debug')) {
-                        macDebugCompilerArgs.each { String arg ->
-                            bin.cppCompiler.args << arg
-                            bin.cCompiler.args << arg
-                            bin.objcCompiler.args << arg
-                            bin.objcppCompiler.args << arg
-                        }
-                    } else {
-                        macReleaseCompilerArgs.each { String arg ->
-                            bin.cppCompiler.args << arg
-                            bin.cCompiler.args << arg
-                            bin.objcCompiler.args << arg
-                            bin.objcppCompiler.args << arg
-                        }
-                    }
-                } else {
-                    // Linux
-                    linuxCompilerArgs.each { String arg ->
-                        bin.cppCompiler.args << arg
-                    }
-                    linuxCCompilerArgs.each { String arg ->
-                        bin.cCompiler.args << arg
-                    }
-                    linuxLinkerArgs.each { String arg ->
-                        bin.linker.args << arg
-                    }
-                    if (bin.buildType.name.contains('debug')) {
-                        linuxDebugCompilerArgs.each { String arg ->
-                            bin.cppCompiler.args << arg
-                            bin.cCompiler.args << arg
-                        }
-                    } else {
-                        linuxReleaseCompilerArgs.each { String arg ->
-                            bin.cppCompiler.args << arg
-                            bin.cCompiler.args << arg
-                        }
-                    }
-                }
-                if (bin.buildType.name.equals('debug')) {
-                    bin.cppCompiler.define('DEBUG')
-                }
-            } else if (bin.targetPlatform.name.equals(NativePlatforms.roborio) || bin.targetPlatform.name.equals(NativePlatforms.raspbian)) {
-                // Rio or Pi
-                linuxCrossCompilerArgs.each { String arg ->
-                    bin.cppCompiler.args << arg
-                }
-                linuxCrossCCompilerArgs.each { String arg ->
-                    bin.cCompiler.args << arg
-                }
-                linuxCrossLinkerArgs.each { String arg ->
-                    bin.linker.args << arg
-                }
-                if (bin.buildType.name.contains('debug')) {
-                    linuxCrossDebugCompilerArgs.each { String arg ->
-                        bin.cppCompiler.args << arg
-                        bin.cCompiler.args << arg
-                    }
-                } else {
-                    linuxCrossReleaseCompilerArgs.each { String arg ->
-                        bin.cppCompiler.args << arg
-                        bin.cCompiler.args << arg
-                    }
-                }
-                if (bin.buildType.name.equals('debug')) {
-                    bin.cppCompiler.define('DEBUG')
-                }
-            }
-
-
-            null
-        } as Action<? extends NativeBinarySpec>)
+            ntExt.usePlatformArguments(bin)
+        })
     }
 
     @Validate
