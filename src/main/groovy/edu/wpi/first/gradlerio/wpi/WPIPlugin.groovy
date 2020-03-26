@@ -6,6 +6,7 @@ import edu.wpi.first.gradlerio.wpi.dependencies.tools.WPIToolsPlugin
 import edu.wpi.first.toolchain.ToolchainExtension
 import edu.wpi.first.toolchain.ToolchainPlugin
 import edu.wpi.first.toolchain.roborio.RoboRioToolchainPlugin
+import edu.wpi.first.toolchain.raspbian.RaspbianToolchainPlugin
 import edu.wpi.first.vscode.GradleVsCode
 import groovy.transform.CompileStatic
 import jaci.gradle.ActionWrapper
@@ -35,16 +36,16 @@ class WPIPlugin implements Plugin<Project> {
         project.plugins.withType(ToolchainsPlugin).all {
             logger.info("DeployTools Native Project Detected".toString())
             project.pluginManager.apply(ToolchainPlugin)
-            project.pluginManager.apply(RoboRioToolchainPlugin)
+            project.pluginManager.apply(RaspbianToolchainPlugin)
             project.pluginManager.apply(NativeUtils)
             project.pluginManager.apply(WPINativeCompileRules)
 
             NativeUtilsExtension nte = project.extensions.getByType(NativeUtilsExtension)
-            nte.withRoboRIO()
+            nte.withRaspbian()
             nte.addWpiNativeUtils()
 
             ToolchainExtension te = project.extensions.getByType(ToolchainExtension)
-            te.crossCompilers.named(nte.wpi.platforms.roborio, new ActionWrapper({ CrossCompilerConfiguration c ->
+            te.crossCompilers.named(nte.wpi.platforms.raspbian, new ActionWrapper({ CrossCompilerConfiguration c ->
                 c.optional.set(false)
             }))
 

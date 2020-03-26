@@ -79,7 +79,7 @@ class FRCPlugin implements Plugin<Project> {
         })
 		
 		targetExtensionAware.extensions.add('vmxpi', { String name, Closure closure ->
-            targetExtension.target(name, VMXpi, closure)
+            targetExtension.target(name, VMXpi, new ActionWrapper(closure))
         })
 
         targetExtensionAware.extensions.add('frcCompatibleTarget', { String name, Closure closure ->
