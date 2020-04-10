@@ -62,7 +62,17 @@ class WPIPlugin implements Plugin<Project> {
                     it.googleTestVersion = wpiExt.googleTestVersion
                     it.imguiVersion = wpiExt.imguiVersion
                 }
+
+                //Modifies NativeUtils HAL groupId and Version to adjust to the VMX-Pi HAL
+                def hal_config = nte.dependencyConfigs.getByName("hal")
+                if (hal_config != null) {
+                    hal_config.setGroupId("com.kauailabs.vmx.first.hal")
+                    hal_config.setVersion(project.extensions.getByType(WPIExtension).vmxVersion)
+                }
+
             }
+
+
 
             project.pluginManager.apply(GradleVsCode)
             project.pluginManager.apply(WPINativeJsonDepRules)
