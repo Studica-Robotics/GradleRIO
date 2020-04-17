@@ -55,6 +55,7 @@ class WPIPlugin implements Plugin<Project> {
             project.afterEvaluate {
                 def ntExt = project.extensions.getByType(NativeUtilsExtension)
                 def wpiExt = project.extensions.getByType(WPIExtension)
+                ntExt.wpi.skipRaspbianAsDesktop = true
                 ntExt.wpi.configureDependencies {
                     it.wpiVersion = wpiExt.wpilibVersion
                     it.niLibVersion = wpiExt.niLibrariesVersion
@@ -68,6 +69,55 @@ class WPIPlugin implements Plugin<Project> {
                 if (hal_config != null) {
                     hal_config.setGroupId("com.kauailabs.vmx.first.hal")
                     hal_config.setVersion(project.extensions.getByType(WPIExtension).vmxVersion)
+                }
+
+                def mau_config = nte.dependencyConfigs.create("mau")
+                if (mau_config != null) {
+                    mau_config.setArtifactId("vmxpi-hal")
+                    mau_config.setGroupId("com.kauailabs.vmx.platform")
+                    mau_config.setHeaderClassifier("headers")
+                    mau_config.setExt("zip")
+                    mau_config.setVersion(project.extensions.getByType(WPIExtension).vmxHalVersion)
+                    mau_config.setSharedUsedAtRuntime(false)
+                    mau_config.getSharedPlatforms().add("linuxraspbian")
+                }
+
+
+                def wpilib_jni_dt = nte.combinedDependencyConfigs.getByName("wpilib_jni_dt")
+
+                def wpilib_jni_mau = nte.combinedDependencyConfigs.create("wpilib_jni_mau")
+                if (wpilib_jni_mau != null) {
+                    wpilib_jni_mau.setLibraryName("wpilib_jni")
+                    wpilib_jni_mau.getTargetPlatforms().add("linuxraspbian")
+                    def deps = wpilib_jni_mau.getDependencies()
+                    deps.add("mau_shared")
+                    deps.add("ntcore_shared")
+                    deps.add("hal_shared")
+                    deps.add("wpiutil_shared")
+                }
+                
+                def wpilib_shared_mau = nte.combinedDependencyConfigs.create("wpilib_shared_mau")
+                if (wpilib_shared_mau != null) {
+                    wpilib_shared_mau.setLibraryName("wpilib_shared")
+                    wpilib_shared_mau.getTargetPlatforms().add("linuxraspbian")
+                    def deps = wpilib_shared_mau.getDependencies()
+                    deps.add("mau_shared")
+                    deps.add("wpilibc_shared")
+                    deps.add("ntcore_shared")
+                    deps.add("hal_shared")
+                    deps.add("wpiutil_shared")
+                }
+
+                def wpilib_executable_shared_mau = nte.combinedDependencyConfigs.create("wpilib_executable_shared_mau")
+                if (wpilib_executable_shared_mau != null) {
+                    wpilib_executable_shared_mau.setLibraryName("wpilib_executable_shared")
+                    wpilib_executable_shared_mau.getTargetPlatforms().add("linuxraspbian")
+                    def deps = wpilib_executable_shared_mau.getDependencies()
+                    deps.add("mau_shared")
+                    deps.add("wpilibc_shared")
+                    deps.add("ntcore_shared")
+                    deps.add("hal_shared")
+                    deps.add("wpiutil_shared")
                 }
 
             }
