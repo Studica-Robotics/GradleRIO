@@ -39,7 +39,7 @@ compileGroovy {
 
 allprojects {
     group = "com.kauailabs.first"
-    version = "2020.3.2-alpha-6"
+    version = "2020.3.2-beta-1"
 
     if (project.hasProperty('publishVersion')) {
         version = project.publishVersion
