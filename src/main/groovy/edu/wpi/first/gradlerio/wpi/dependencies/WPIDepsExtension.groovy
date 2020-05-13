@@ -15,6 +15,7 @@ public class WPIDepsExtension {
 
     final WPIVendorDepsExtension vendor
     final WPISimDepsExtension sim
+    private java.util.List<java.lang.String> strings
 
     @Inject
     WPIDepsExtension(Project project, WPIExtension wpi) {
@@ -90,6 +91,7 @@ public class WPIDepsExtension {
         // libraries, while the -jni ones are standalone (have static libs embedded).
         return ["edu.wpi.first.thirdparty.frc2020.opencv:opencv-cpp:${wpi.opencvVersion}:${platform}${debugString}@zip".toString(),
                 "com.kauailabs.vmx.first.hal:hal-cpp:${wpi.vmxVersion}:linuxraspbian@zip".toString(),
+                "com.kauailabs.vmx.platform:vmxpi-hal:${wpi.vmxPlatformVersion}:linuxraspbian@zip".toString(),
                 "edu.wpi.first.wpiutil:wpiutil-cpp:${wpi.wpilibVersion}:${platform}${debugString}@zip".toString(),
                 "edu.wpi.first.ntcore:ntcore-cpp:${wpi.wpilibVersion}:${platform}${debugString}@zip".toString(),
                 "edu.wpi.first.cscore:cscore-cpp:${wpi.wpilibVersion}:${platform}${debugString}@zip".toString()]
