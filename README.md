@@ -1,13 +1,11 @@
 # VMX-Pi set-up
-Clone this repo, then navigate to the root of this project in a powershell 
 
-Run `./gradlew publishToMavenLocal -PlocalPublish` 
+Follow the documentation here to learn how to adapt your project's build.gradle file for use of this version of GradleRIO:
+https://pdocs.kauailabs.com/vmx-pi/software/vmx-pi-for-frc-2020-robot-programming/vmx-pi-for-frc-documentation/customizing-a-vscode-wpi-library-project-to-build-deploy-for-vmx-pi/
 
-View the project build.gradle examples in https://github.com/KadenK/GradleRIO/tree/master/vscode-examples to see how to adapt your project
+Check for the latest released version here:
+https://plugins.gradle.org/plugin/com.kauailabs.first.GradleRIO
 
-To update the VMX WPI HAL, change the version number in WPIExtension.groovy to reflect the desired version. Then run the above steps, ommiting the clone step.
-
-Note: C++ raspbian toolchains will need to be installed to VSCode. In VSCode, "Run a command in Gradle", and run `installRaspbianToolchain`
 
 # GradleRIO
 GradleRIO is a powerful Gradle Plugin that allows teams competing in the FIRST
@@ -137,8 +135,20 @@ Next, replace the version in the plugin line (only change the GradleRIO line):
 ```gradle
 plugins {
     // ... other plugins ...
-    id "edu.wpi.first.GradleRIO" version "REPLACE ME WITH THE LATEST VERSION"
+    id "com.kauailabs.first.GradleRIO" version "REPLACE ME WITH THE LATEST VERSION"
 }
 ```
 
-The latest version can be obtained from here: https://plugins.gradle.org/plugin/edu.wpi.first.GradleRIO
+The latest version can be obtained from here: https://plugins.gradle.org/plugin/com.kauailabs.first.GradleRIO
+
+
+#Publishing of a local build of this version of GradleRIO
+Clone this repo, then navigate to the root of this project in a powershell 
+
+Run `./gradlew publishToMavenLocal -PlocalPublish` 
+
+View the project build.gradle examples in https://github.com/KadenK/GradleRIO/tree/master/vscode-examples to see how to adapt your project
+
+To update the VMX WPI HAL, change the version number in WPIExtension.groovy to reflect the desired version. Then run the above steps, ommiting the clone step.
+
+Note: C++ raspbian toolchains will need to be installed to VSCode. In VSCode, "Run a command in Gradle", and run `installRaspbianToolchain`
