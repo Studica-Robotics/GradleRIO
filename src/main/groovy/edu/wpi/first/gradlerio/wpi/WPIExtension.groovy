@@ -18,7 +18,7 @@ class WPIExtension {
     // WPILib (first.wpi.edu/FRC/roborio/maven) libs
     String wpilibVersion = "2020.3.2"
     String vmxVersion = "2020.3.2-vmxpi-7"
-    String vmxPlatformVersion = "1.1.237"
+    String vmxPlatformVersion = "1.1.243"
     String niLibrariesVersion = "2020.10.1"
     String opencvVersion = "3.4.7-2"
     String imguiVersion = "1.72b-1"
