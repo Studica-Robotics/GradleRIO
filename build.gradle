@@ -38,8 +38,8 @@ compileGroovy {
 }
 
 allprojects {
-    group = "com.studica.wsr"
-    version = "2020.3.2.8"
+    group = "com.kauailabs.wsr"
+    version = "2020.3.2.9"
 
     if (project.hasProperty('publishVersion')) {
         version = project.publishVersion
@@ -49,14 +49,14 @@ allprojects {
 pluginBundle {
     website = 'https://github.com/kauailabs/GradleRIO'
     vcsUrl = 'https://github.com/kauailabs/GradleRIO'
-    description = 'The Kauailabs custom GradleRIO for deploying WPILib projects to the VMX-Pi'
+    description = 'The Kauailabs custom GradleRIO for deploying WPILib projects to the VMX Robotics Controllers - for use in Worldskills Mobile Robotics'
     tags = ['frc', 'wpilib', 'gradlerio', 'vmxpi', 'vmx-pi']
 }
 
 gradlePlugin {
     plugins {
         gradleRio {
-            id = 'com.studica.wsr.GradleRIO'
+            id = 'com.kauailabs.wsr.GradleRIO'
             displayName = 'GradleRIO'
             implementationClass = 'edu.wpi.first.gradlerio.GradleRIOPlugin'
         }
@@ -69,14 +69,14 @@ def examplesFolder = file("$rootDir/examples")
 
 tasks.register('PatchExamples') {
     doLast {
-        String regex = "(id\\s*?[\\\"|\\']com\\.studica\\.wsr\\.GradleRIO[\\\"|\\'].*?version\\s*?[\\\"|\\'])(.+?)([\\\"|\\'])";
+        String regex = "(id\\s*?[\\\"|\\']com\\.kauailabs\\.wsr\\.GradleRIO[\\\"|\\'].*?version\\s*?[\\\"|\\'])(.+?)([\\\"|\\'])";
 
         examplesFolder.eachFile { File file ->
             if (file.isDirectory() && file.name != '_archived') {
                 def buildGradleFile = new File(file, 'build.gradle')
                 if (buildGradleFile.exists() && buildGradleFile.isFile()) {
                     def text = buildGradleFile.text
-                    text = text.replaceAll(regex, "id \"com.studica.wsr.GradleRIO\" version \"${version}\"")
+                    text = text.replaceAll(regex, "id \"com.kauailabs.wsr.GradleRIO\" version \"${version}\"")
                     buildGradleFile.text = text
                 }
             }
