@@ -1,0 +1,12 @@
+After building the artifact, the artifact must be deployed to the Gradle Plugin site (https://plugins.gradle.org/).  The specific URL at which the plugin is deployed is as follows:
+
+Audience	URL
+
+FIRST			https://plugins.gradle.org/plugin/com.kauailabs.first.GradleRIO
+WorldSkills	https://plugins.gradle.org/plugin/com.kauailabs.wsr.GradleRIO
+
+To publish, after ensuring a new unique version number is in the build.gradle file, invoke the following command from the <gradlerio_github_repo_root>:
+
+gradlew publishPlugins
+
+After publication, it’s recommended to verify that the new GradleRIO plugin version is successfully published to the Gradle Plugin site.
