@@ -152,3 +152,6 @@ View the project build.gradle examples in https://github.com/KadenK/GradleRIO/tr
 To update the VMX WPI HAL, change the version number in WPIExtension.groovy to reflect the desired version. Then run the above steps, ommiting the clone step.
 
 Note: C++ raspbian toolchains will need to be installed to VSCode. In VSCode, "Run a command in Gradle", and run `installRaspbianToolchain`
+
+
+5/30/22:  Transferred ownership to Studica-Robotics organization.
